@@ -1,0 +1,43 @@
+# Run all checks without a local PHP installation:
+# docker compose -f compose.test.yaml --profile test run --build --rm tests
+# Stop Redis and remove the isolated test dependencies:
+# docker compose -f compose.test.yaml --profile test down --volumes
+#
+# To use a local PHP installation, start only Redis:
+# docker compose -f compose.test.yaml up -d --wait redis
+# Read the assigned local port with: docker compose -f compose.test.yaml port redis 6379
+# REDIS_TEST_HOST=127.0.0.1 REDIS_TEST_PORT=<port> composer test-integration
+name: rate-limiter-tests
+
+services:
+  redis:
+    image: redis:7.4
+    ports:
+      - "127.0.0.1::6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  tests:
+    profiles: [test]
+    build:
+      context: tests
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: "1"
+      REDIS_TEST_HOST: redis
+      REDIS_TEST_PORT: "6379"
+    volumes:
+      - .:/app
+      - test-vendor:/app/vendor
+    depends_on:
+      redis:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - composer install --no-interaction --prefer-dist --no-progress && composer test && composer test-integration
+
+volumes:
+  test-vendor:

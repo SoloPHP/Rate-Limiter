@@ -1,0 +1,66 @@
+{
+  "name": "solophp/rate-limiter",
+  "type": "library",
+  "description": "Atomic per-key rate limits for PHP: fixed or renewable windows in Redis, with an in-memory twin for tests.",
+  "keywords": [
+    "php",
+    "rate-limit",
+    "rate-limiter",
+    "throttle",
+    "redis"
+  ],
+  "homepage": "https://github.com/SoloPHP/Rate-Limiter",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vitaliy Olos",
+      "email": "vedastudio@gmail.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/SoloPHP/Rate-Limiter/issues",
+    "source": "https://github.com/SoloPHP/Rate-Limiter"
+  },
+  "autoload": {
+    "psr-4": {
+      "Solo\\RateLimiter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Solo\\RateLimiter\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.3",
+    "psr/clock": "^1.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.0",
+    "phpunit/phpunit": "^12.0",
+    "squizlabs/php_codesniffer": "^3.13"
+  },
+  "suggest": {
+    "ext-redis": "For RedisRateLimiter, the limiter every process shares"
+  },
+  "scripts": {
+    "cs-check": "phpcs --standard=PSR12 src/ tests/",
+    "cs-fix": "phpcbf --standard=PSR12 src/ tests/",
+    "analyze": "phpstan analyse src tests --level=max",
+    "validate-package": "@composer validate --strict",
+    "test-unit": "phpunit --testsuite unit",
+    "test-integration": "phpunit --testsuite integration --fail-on-skipped",
+    "test": [
+      "@validate-package",
+      "@cs-check",
+      "@analyze",
+      "@test-unit"
+    ]
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
